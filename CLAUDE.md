@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Resuming a design session?** Read [`docs/DESIGN-LOG.md`](docs/DESIGN-LOG.md) first — it holds the
+> full design discussion and decisions accumulated so far (Claude's built-in memory does NOT carry
+> across folders, so this file is the bridge).
+
 ## What This Is
 
 A **tool-neutral collection of Agent Skills**. The skills (portable `SKILL.md` packages) are the
