@@ -79,6 +79,17 @@ Accumulated decisions (NOT final — discussion mode):
   - delete/forget → **always confirm** (destructive, hard to undo)
   - write → **propose / validate** (lightweight: "je note ceci: … ok?")
   - read / search → **silent** (read-only, no side effects)
+- **Delete vs archive — distinct lifecycles (do not conflate):**
+  - *Delete (forget)* is reserved for content that is **wrong or stale** — an invalidated fact, a
+    retracted decision. This is the destructive op that always needs confirmation.
+  - *Archive (close)* is for content that is **finished but still true** — a resolved discussion, a
+    shipped decision and its rationale. It is NOT deleted; it transitions `open → closed` and moves
+    out of the hot S1 layer while staying readable in cold S2. Mirrors `PLAN.md → PLAN_DONE.md`.
+  - Implication: a discussion thread has states `open → closed → (cold-archived)`, never silently
+    erased. The "why we decided" must survive even when the thread is closed, so it isn't re-debated.
+  - Implication for ops: `forget` should refuse / warn when asked to remove something merely *done*
+    rather than *wrong* — it should suggest archiving instead. Archiving may be automatic on close;
+    deleting is always deliberate + confirmed.
 - **The S1→S2 gateway is the real design crux:** how S1 knows it must wake S2. Today that's the
   `description` hook in frontmatter. More important than the write/read ops themselves.
 - **Caveat to bake in:** a recalled memory reflects what was true when written — verify before
@@ -96,3 +107,5 @@ Accumulated decisions (NOT final — discussion mode):
 ## Changelog
 
 - 2026-06-07 — Initial design log created (session handoff before moving work into this repo).
+- 2026-06-07 — Added delete-vs-archive lifecycle decision (forget = wrong/stale only; finished =
+  archive/close, never erase; `forget` warns when asked to delete merely-done content).
