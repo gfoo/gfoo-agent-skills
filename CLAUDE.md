@@ -4,7 +4,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A Claude Code **plugin marketplace** — a git-hosted catalog that distributes plugins. There is no source code to build or test.
+A **tool-neutral collection of Agent Skills**. The skills (portable `SKILL.md` packages) are the
+source of truth; each AI agent gets a thin distribution adapter on top. There is no source code to
+build or test.
+
+This repo happens to expose a Claude Code marketplace (`.claude-plugin/marketplace.json`) as one
+adapter — but the skills themselves conform to the open Agent Skills standard and are meant to run
+unmodified on Claude Code, Pi, OpenCode, Codex CLI, Gemini CLI, etc.
+
+## Cross-tool portability (keep this true)
+
+- Keep every `SKILL.md` frontmatter to the **core fields** (`name`, `description`) plus only widely
+  supported optionals (`when_to_use`, `allowed-tools`). Avoid tool-specific frontmatter unless the
+  skill genuinely needs it — it breaks portability.
+- Prefer plain markdown instructions + `scripts/`/`references/`/`assets/`. Don't depend on
+  Claude-Code-only primitives (hooks, sub-agents, `Task`) in a skill meant to be shared.
+- Distribution adapters are additive and never duplicate skill content:
+  - **Claude Code** → `.claude-plugin/marketplace.json` + `plugins/<name>/.claude-plugin/plugin.json`
+  - **Pi** → `package.json` with a `"pi"` key pointing at the skill dirs + the `pi-package` keyword
+  - **OpenCode / Codex / Gemini** → read skill folders by convention; no manifest needed
 
 ## Structure
 
@@ -37,7 +55,7 @@ plugins/
 
 ```
 skills/<skill-name>/
-  SKILL.md             # Required — frontmatter (name, description, user-invokable) + body
+  SKILL.md             # Required — frontmatter (name, description) + markdown body
   assets/              # Optional — output templates referenced via @path
   references/          # Optional — metric definitions, checklists, rubrics
   scripts/             # Optional — executable helpers (Python stdlib-only preferred, no pip deps)

@@ -1,36 +1,45 @@
-# gfoo-claude-marketplace
+# gfoo-agent-skills
 
-A Claude Code **plugin marketplace** — a git-hosted catalog that distributes plugins.
+A tool-neutral collection of **Agent Skills** — portable `SKILL.md` capability packages that
+work across multiple AI coding agents, not just one.
 
-Multi-plugin architecture: each plugin lives in `plugins/<name>/` with its own skills, templates, and manifest.
+Skills conform to the open [Agent Skills standard](https://www.agensi.io/learn/agent-skills-open-standard)
+(originated from Anthropic's `SKILL.md` for Claude Code): a directory with a `SKILL.md`, YAML
+frontmatter (`name` + `description`), markdown instructions, and optional `scripts/` / `references/`
+/ `assets/`. Skills that stick to this core format run unmodified on Claude Code, Pi, OpenCode,
+Codex CLI, Gemini CLI, and others.
+
+## Design principle: one source, many distributors
+
+The skills are the source of truth. Each agent gets a thin **distribution adapter** on top — never
+a copy:
+
+| Agent | Adapter | Status |
+|-------|---------|--------|
+| Claude Code | `.claude-plugin/marketplace.json` (+ `/plugin install`) | present |
+| Pi | `package.json` (`"pi"` key + `pi-package` keyword) | added with first skill |
+| OpenCode / Codex / Gemini | read skill folders directly (no manifest) | works via convention |
 
 ## Structure
 
 ```
 .claude-plugin/
-  marketplace.json              # Marketplace catalog (lists all plugins)
+  marketplace.json              # Claude Code distribution adapter
 plugins/
   <plugin-name>/
-    .claude-plugin/plugin.json  # Plugin manifest (name, version)
-    skills/                     # Skill modules
-    templates/                  # Optional shared templates
-    workflow.md                 # Optional user-level rules
+    .claude-plugin/plugin.json  # Claude plugin manifest
+    skills/<skill>/SKILL.md      # the portable skills (standard format)
 ```
 
-To add a new plugin, create `plugins/<name>/` with a `.claude-plugin/plugin.json` and register it in `marketplace.json`. See `CLAUDE.md` for details.
+## Available Skills
 
-## Available Plugins
+_None yet — the first is a memory / knowledge-management system, under design._
 
-_None yet — the first plugin (a memory / knowledge-management system) is under design._
-
-## Quick Start
+## Quick Start (Claude Code)
 
 ```bash
-# Add the marketplace
-/plugin marketplace add https://github.com/gfoo/gfoo-claude-marketplace.git
-
-# Install a plugin
+/plugin marketplace add https://github.com/gfoo/gfoo-agent-skills.git
 /plugin install <plugin-name>
 ```
 
-See each plugin's README for full documentation.
+See `CLAUDE.md` for the cross-tool packaging conventions.
